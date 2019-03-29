@@ -1,4 +1,5 @@
 /* Copyright (c) 2016-2018, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -691,7 +692,7 @@ static int pd_send_msg(struct usbpd *pd, u8 msg_type, const u32 *data,
 	spin_lock_irqsave(&pd->rx_lock, flags);
 	if (!list_empty(&pd->rx_q)) {
 		spin_unlock_irqrestore(&pd->rx_lock, flags);
-		usbpd_dbg(&pd->dev, "Abort send due to pending RX\n");
+		usbpd_err(&pd->dev, "Abort send due to pending RX\n");
 		return -EBUSY;
 	}
 	spin_unlock_irqrestore(&pd->rx_lock, flags);
@@ -1462,9 +1463,6 @@ static void usbpd_set_state(struct usbpd *pd, enum usbpd_state next_state)
 		 * USB Host stack was started at PE_SRC_STARTUP but if peer
 		 * doesn't support USB communication, we can turn it off
 		 */
-		if (pd->current_dr == DR_DFP && !pd->peer_usb_comm &&
-				!pd->in_explicit_contract)
-			stop_usb_host(pd);
 
 		pd->in_explicit_contract = true;
 
@@ -3389,7 +3387,7 @@ static int psy_changed(struct notifier_block *nb, unsigned long evt, void *ptr)
 		if (val.intval == POWER_SUPPLY_TYPE_USB ||
 			val.intval == POWER_SUPPLY_TYPE_USB_CDP ||
 			val.intval == POWER_SUPPLY_TYPE_USB_FLOAT) {
-			usbpd_dbg(&pd->dev, "typec mode:%d type:%d\n",
+			usbpd_info(&pd->dev, "typec mode:%d type:%d\n",
 				typec_mode, val.intval);
 			pd->typec_mode = typec_mode;
 			queue_work(pd->wq, &pd->start_periph_work);
