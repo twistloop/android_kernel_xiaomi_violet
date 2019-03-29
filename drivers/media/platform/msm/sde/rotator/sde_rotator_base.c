@@ -1,4 +1,5 @@
 /* Copyright (c) 2012, 2015-2018, The Linux Foundation. All rights reserved.
+ * Copyright (C) 2019 XiaoMi, Inc.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -819,6 +820,12 @@ int sde_rotator_base_init(struct sde_rot_data_type **pmdata,
 {
 	int rc;
 	struct sde_rot_data_type *mdata;
+
+	/* If probe deferral happened, return early. */
+	if (sde_rot_res) {
+	        SDEROT_ERR("Rotator data already initialized, skip init\n");
+	        return 0;
+	}
 
 	mdata = devm_kzalloc(&pdev->dev, sizeof(*mdata), GFP_KERNEL);
 	if (mdata == NULL)
