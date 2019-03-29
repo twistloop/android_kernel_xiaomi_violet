@@ -1983,10 +1983,10 @@ static bool can_steal_fallback(unsigned int order, int start_mt)
 	if (order >= pageblock_order)
 		return true;
 
-	if (order >= pageblock_order / 2 ||
-		start_mt == MIGRATE_RECLAIMABLE ||
-		start_mt == MIGRATE_UNMOVABLE ||
-		page_group_by_mobility_disabled)
+       if (order >= pageblock_order / 2 ||
+               start_mt == MIGRATE_RECLAIMABLE ||
+               start_mt == MIGRATE_UNMOVABLE ||
+               page_group_by_mobility_disabled)
 		return true;
 
 	return false;
@@ -2281,7 +2281,7 @@ find_smallest:
 							current_order++) {
 		area = &(zone->free_area[current_order]);
 		fallback_mt = find_suitable_fallback(area, current_order,
-				start_migratetype, false, &can_steal);
+				start_migratetype, false, &can_steal, order);
 		if (fallback_mt != -1)
 			break;
 	}
